@@ -1,0 +1,440 @@
+# Windows 命令行使用 HTTPS 操作 GitHub 教程
+
+## 一、准备工作：安装 Git
+
+想在 Windows 命令行里操作 GitHub，首先必须安装 Git。
+
+安装完成后，在 CMD 里输入：
+
+```bat
+git --version
+```
+
+如果能显示 Git 版本号，说明 Git 安装成功。
+
+---
+
+## 二、克隆 GitHub 仓库到本地
+
+你这次使用的是 HTTPS 地址：
+
+```bat
+git clone https://github.com/wt13-Maker/computer-mistake-and-solution.git
+```
+
+执行后出现类似：
+
+```text
+Cloning into 'computer-mistake-and-solution'...
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Compressing objects: 100% (2/2), done.
+remote: Total 3 ...
+```
+
+说明已经成功连接 GitHub，并且仓库已经被克隆到本地。
+
+克隆后，本地会多出一个文件夹：
+
+```text
+C:\Users\17757\computer-mistake-and-solution
+```
+
+这个文件夹就是你的本地 Git 仓库。
+
+---
+
+## 三、进入本地仓库文件夹
+
+以后要操作这个仓库，需要先进入这个文件夹：
+
+```bat
+cd C:\Users\17757\computer-mistake-and-solution
+```
+
+或者如果你已经在 `C:\Users\17757>` 下，可以输入：
+
+```bat
+cd computer-mistake-and-solution
+```
+
+进入后，命令行前面会显示：
+
+```bat
+C:\Users\17757\computer-mistake-and-solution>
+```
+
+注意：这一段是系统自动显示的路径提示符，不需要自己手动输入。
+
+---
+
+## 四、测试是否能连接 GitHub 仓库
+
+可以使用：
+
+```bat
+git ls-remote https://github.com/wt13-Maker/computer-mistake-and-solution.git
+```
+
+如果返回类似：
+
+```text
+ccbc277574e66f27206ac65240fe280da64a3873        HEAD
+ccbc277574e66f27206ac65240fe280da64a3873        refs/heads/main
+```
+
+说明连接成功，仓库地址正确。
+
+---
+
+## 五、遇到的问题 1：Repository not found
+
+之前你输入过：
+
+```bat
+git ls-remote http://github.com/wt13/computer-mistake-and-solution.git
+```
+
+结果报错：
+
+```text
+remote: Repository not found.
+fatal: repository ... not found
+```
+
+原因是用户名写错了。
+
+错误的是：
+
+```text
+wt13
+```
+
+正确的是：
+
+```text
+wt13-Maker
+```
+
+所以正确地址应该是：
+
+```bat
+https://github.com/wt13-Maker/computer-mistake-and-solution.git
+```
+
+---
+
+## 六、遇到的问题 2：多输入了一个 `>`
+
+你曾经输入：
+
+```bat
+C:\Users\17757>>git ls-remote http://github.com/wt13-maker/computer-mistake-and-solution.git
+```
+
+然后出现：
+
+```text
+'ls-remote' 不是内部或外部命令，也不是可运行的程序
+```
+
+原因是你多输入了一个 `>`。
+
+正确做法是：不要手动输入前面的路径提示符。
+
+只需要输入命令本身：
+
+```bat
+git ls-remote https://github.com/wt13-Maker/computer-mistake-and-solution.git
+```
+
+命令行前面的：
+
+```bat
+C:\Users\17757>
+```
+
+是系统自动显示的，不属于命令内容。
+
+---
+
+## 七、本地文件夹和 GitHub 仓库的关系
+
+你克隆下来的文件夹：
+
+```text
+C:\Users\17757\computer-mistake-and-solution
+```
+
+是 GitHub 仓库在你电脑上的本地副本。
+
+但它和 GitHub 不是自动同步的。
+
+也就是说：
+
+* 你把文件拖进本地文件夹，GitHub 网页上不会自动出现；
+* GitHub 上的文件有变化，本地文件夹也不会自动更新；
+* 需要通过 Git 命令手动上传或拉取。
+
+---
+
+## 八、把本地文件上传到 GitHub
+
+如果你把文件拖进了：
+
+```text
+C:\Users\17757\computer-mistake-and-solution
+```
+
+想让 GitHub 上也看到这些文件，需要依次执行：
+
+```bat
+git status
+git add .
+git commit -m "add"
+git push origin main
+```
+
+含义如下：
+
+```bat
+git status
+```
+
+查看当前有哪些文件发生了变化。
+
+```bat
+git add .
+```
+
+把当前目录下的新增、修改文件加入暂存区。
+
+这里的 `.` 表示“当前文件夹及其子文件夹里的所有改动”。
+
+```bat
+git commit -m "add"
+```
+
+把暂存区里的改动保存成一次本地提交记录。
+
+```bat
+git push origin main
+```
+
+把本地提交推送到 GitHub 的 `main` 分支。
+
+---
+
+## 九、为什么不能 `git add .` 后直接 `git push`
+
+不能直接这样：
+
+```bat
+git add .
+git push
+```
+
+因为 `git add .` 只是把文件放进暂存区，还没有形成提交记录。
+
+GitHub 接收的是 commit，不是暂存区里的文件。
+
+正确顺序必须是：
+
+```bat
+git add .
+git commit -m "add"
+git push origin main
+```
+
+可以理解成：
+
+```text
+add = 选中文件
+commit = 打包成一次版本记录
+push = 上传到 GitHub
+```
+
+---
+
+## 十、遇到的问题 3：commit 提示 Author identity unknown
+
+你执行：
+
+```bat
+git commit -m "add"
+```
+
+时出现：
+
+```text
+Author identity unknown
+
+Please tell me who you are.
+```
+
+原因是 Git 还不知道你的用户名和邮箱。
+
+解决方法是设置 Git 用户信息：
+
+```bat
+git config --global user.name "wt13-maker"
+git config --global user.email "你的GitHub邮箱@example.com"
+```
+
+注意：这两条命令执行成功时，通常不会有任何回应，这是正常的。
+
+可以用下面命令检查是否设置成功：
+
+```bat
+git config --global user.name
+git config --global user.email
+```
+
+如果分别显示用户名和邮箱，说明配置成功。
+
+配置完成后，重新执行：
+
+```bat
+git add .
+git commit -m "add"
+git push origin main
+```
+
+---
+
+## 十一、遇到的问题 4：push 后 GitHub 没变化
+
+你执行 `git push` 后，如果显示：
+
+```text
+Everything up-to-date
+```
+
+意思是：没有新的 commit 可以上传。
+
+常见原因是之前 `commit` 没有成功。
+
+例如你之前因为没有配置用户名和邮箱，导致 `commit` 失败，所以后面直接 `push` 时，GitHub 没有变化。
+
+解决方法：
+
+```bat
+git status
+git add .
+git commit -m "add"
+git push origin main
+```
+
+一定要确保 `commit` 成功后，再执行 `push`。
+
+---
+
+## 十二、遇到的问题 5：push 出现 403 权限错误
+
+你曾经遇到：
+
+```text
+remote: Permission to wt13-Maker/computer-mistake-and-solution.git denied to wt13-Maker.
+fatal: unable to access ... The requested URL returned error: 403
+```
+
+这表示 GitHub 拒绝了推送请求。
+
+使用 HTTPS 推送时，GitHub 不再支持账号密码，需要使用 GitHub 登录认证或 Personal Access Token。
+
+如果 Windows 弹出 GitHub 登录窗口，按提示登录即可。
+
+如果命令行要求输入密码，不能输入 GitHub 密码，而要输入 Personal Access Token。
+
+---
+
+## 十三、启用 Git Credential Manager，避免每次登录
+
+为了避免每次打开 CMD 都重新登录，可以启用 Git Credential Manager：
+
+```bat
+git config --global credential.helper manager
+```
+
+执行后没有回应是正常的。
+
+可以检查：
+
+```bat
+git config --global credential.helper
+```
+
+如果显示：
+
+```text
+manager
+```
+
+说明已经启用。
+
+以后第一次 push 时登录成功后，Windows 会保存认证信息，之后通常不用每次重新输入。
+
+---
+
+## 十四、从 GitHub 拉取最新文件到本地
+
+如果 GitHub 网页上有新的文件或修改，本地不会自动更新。
+
+需要在本地仓库文件夹中执行：
+
+```bat
+git pull origin main
+```
+
+这样 GitHub 上的最新内容就会同步到本地文件夹。
+
+---
+
+## 十五、日常使用流程
+
+以后每次要上传本地文件到 GitHub，大致按这个顺序：
+
+```bat
+cd C:\Users\17757\computer-mistake-and-solution
+git status
+git add .
+git commit -m "add"
+git push origin main
+```
+
+如果只是想把 GitHub 上的新内容同步到电脑：
+
+```bat
+cd C:\Users\17757\computer-mistake-and-solution
+git pull origin main
+```
+
+---
+
+## 十六、最重要的理解
+
+本地文件夹：
+
+```text
+C:\Users\17757\computer-mistake-and-solution
+```
+
+和 GitHub 网页上的仓库不是自动同步的。
+
+上传到 GitHub 需要：
+
+```text
+add → commit → push
+```
+
+从 GitHub 下载更新需要：
+
+```text
+pull
+```
+
+只拖文件到本地文件夹，不会自动出现在 GitHub。
+
+只刷新本地文件夹，也不会自动看到 GitHub 上的新内容。
+
+必须通过 Git 命令同步。
